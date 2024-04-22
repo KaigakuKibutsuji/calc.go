@@ -8,7 +8,6 @@ import (
 	"strings"
 )
 
-// Math operations
 func Add(x, y int) int {
 	return x + y
 }
