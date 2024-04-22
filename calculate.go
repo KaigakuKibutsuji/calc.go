@@ -25,14 +25,12 @@ func Div(x, y int) int {
 	return x / y
 }
 
-// Parse integers from strings
 func ParseInt(x, y string) (int, int) {
 	num1, _ := strconv.Atoi(x)
 	num2, _ := strconv.Atoi(y)
 	return num1, num2
 }
 
-// Convert Roman numerals to integers
 func RomanToInt(s string) int {
 	h := map[uint8]int{
 		'I': 1,
@@ -56,7 +54,6 @@ func RomanToInt(s string) int {
 	return v
 }
 
-// Convert integers to Roman numerals
 func IntToRoman(number int) string {
 	conversions := []struct {
 		value int
@@ -82,7 +79,6 @@ func IntToRoman(number int) string {
 	return roman
 }
 
-// Handle different types of input and perform operations
 func Looperkal(x, plus, y string) {
 	inted := [10]string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}
 	roman := [10]string{"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"}
