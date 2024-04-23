@@ -21,16 +21,26 @@ func Mul(x, y int) int {
 }
 
 func Div(x, y int) int {
+	if y == 0 {
+		panic("Error: деление на ноль")
+	}
 	return x / y
 }
 
 func ParseInt(x, y string) (int, int) {
-	num1, _ := strconv.Atoi(x)
-	num2, _ := strconv.Atoi(y)
-	return num1, num2
+	_, err := strconv.Atoi(x)
+	if err == nil {
+		panic(fmt.Sprintf("Error: ожидалось целое число, получено: '%s'", x))
+	}
+	_, err = strconv.Atoi(y)
+	if err == nil {
+		panic(fmt.Sprintf("Error: ожидалось целое число, получено: '%s'", y))
+	}
+	return 0, 0
 }
 
 func RomanToInt(s string) int {
+	var v, lv, cv int
 	h := map[uint8]int{
 		'I': 1,
 		'V': 5,
@@ -40,7 +50,7 @@ func RomanToInt(s string) int {
 		'D': 500,
 		'M': 1000,
 	}
-	var v, lv, cv int
+
 	for i := len(s) - 1; i >= 0; i-- {
 		cv = h[s[i]]
 		if cv < lv {
@@ -50,10 +60,15 @@ func RomanToInt(s string) int {
 		}
 		lv = cv
 	}
+
 	return v
 }
 
 func IntToRoman(number int) string {
+	if number <= 0 {
+		panic("Error: в римской системе нет отрицательных чисел и нуля")
+	}
+
 	conversions := []struct {
 		value int
 		digit string
@@ -68,6 +83,7 @@ func IntToRoman(number int) string {
 		{4, "IV"},
 		{1, "I"},
 	}
+
 	roman := ""
 	for _, conversion := range conversions {
 		for number >= conversion.value {
@@ -95,7 +111,7 @@ func Looperkal(x, plus, y string) {
 				case "/":
 					fmt.Println(Div(num1, num2))
 				default:
-					fmt.Println("Error: не соответствует математической операции")
+					panic("Error: не соответствует математической операции")
 				}
 			} else if x == roman[i] && y == roman[j] {
 				num1 := RomanToInt(x)
@@ -107,7 +123,7 @@ func Looperkal(x, plus, y string) {
 				case "-":
 					rom := Sub(num1, num2)
 					if rom < 1 {
-						fmt.Print("Error: в римской системе нет отрицательных чисел и нуля")
+						panic("Error: в римской системе нет отрицательных чисел")
 					}
 					fmt.Println(IntToRoman(rom))
 				case "*":
@@ -117,11 +133,11 @@ func Looperkal(x, plus, y string) {
 					rom := Div(num1, num2)
 					fmt.Println(IntToRoman(rom))
 				default:
-					fmt.Println("Error: не соответствует математической операции")
+					panic("Error: не соответствует математической операции")
 				}
 			}
 			if (x == roman[i] && y == inted[j]) || (x == inted[i] && y == roman[j]) {
-				fmt.Println("Error: разные типы счисления")
+				panic("Error: разные типы счисления")
 			}
 		}
 	}
@@ -135,18 +151,27 @@ func main() {
 	line = sc.Text()
 	arr := strings.Split(line, " ")
 	if len(arr) != 3 {
-		fmt.Println("Error: математическая операция должна состоять из двух элементов")
-		return
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Println(r)
+			}
+		}()
+		panic("Error: математическая операция должна состоять из двух элементов")
 	}
 	x, plus, y = arr[0], arr[1], arr[2]
 	x1, y1 := ParseInt(x, y)
 	x2 := RomanToInt(x)
 	y2 := RomanToInt(y)
 	if x1 > 10 || y1 > 10 || x1 < 0 || y1 < 0 {
-		fmt.Println("Error: числа находятся в диапозоне от 1 до 10")
+		panic("Error: числа находятся в диапазоне от 1 до 10")
 	}
 	if x2 > 10 || y2 > 10 || x2 < 0 || y2 < 0 {
-		fmt.Println("Error: числа находятся в диапозоне от 1 до 10")
+		panic("Error: числа находятся в диапазоне от 1 до 10")
 	}
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println(r)
+		}
+	}()
 	Looperkal(x, plus, y)
 }
