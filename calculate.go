@@ -27,16 +27,26 @@ func Div(x, y int) int {
 	return x / y
 }
 
+func ParseRoman(s string) (string, string, bool) {
+	var romanDigits = []string{"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"}
+	for _, digit := range romanDigits {
+		if s == digit {
+			return digit, "Roman", true
+		}
+	}
+	return "", "", false
+}
+
 func ParseInt(x, y string) (int, int) {
-	_, err := strconv.Atoi(x)
-	if err == nil {
+	num1, err := strconv.Atoi(x)
+	if err != nil {
 		panic(fmt.Sprintf("Error: ожидалось целое число, получено: '%s'", x))
 	}
-	_, err = strconv.Atoi(y)
-	if err == nil {
+	num2, err := strconv.Atoi(y)
+	if err != nil {
 		panic(fmt.Sprintf("Error: ожидалось целое число, получено: '%s'", y))
 	}
-	return 0, 0
+	return num1, num2
 }
 
 func RomanToInt(s string) int {
@@ -159,19 +169,40 @@ func main() {
 		panic("Error: математическая операция должна состоять из двух элементов")
 	}
 	x, plus, y = arr[0], arr[1], arr[2]
-	x1, y1 := ParseInt(x, y)
-	x2 := RomanToInt(x)
-	y2 := RomanToInt(y)
-	if x1 > 10 || y1 > 10 || x1 < 0 || y1 < 0 {
-		panic("Error: числа находятся в диапазоне от 1 до 10")
+	_, _, isRomanX := ParseRoman(x)
+	_, _, isRomanY := ParseRoman(y)
+
+	if (isRomanX && !isRomanY) || (!isRomanX && isRomanY) {
+		fmt.Println("Error: нельзя смешивать типы счисления")
+		return
 	}
-	if x2 > 10 || y2 > 10 || x2 < 0 || y2 < 0 {
-		panic("Error: числа находятся в диапазоне от 1 до 10")
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			fmt.Println(r)
+
+	if !isRomanX && !isRomanY {
+		xInt, err := strconv.Atoi(x)
+		if err != nil {
+			panic(fmt.Sprintf("Error: ожидалось целое число, получено: '%s'", x))
 		}
-	}()
-	Looperkal(x, plus, y)
+		yInt, err := strconv.Atoi(y)
+		if err != nil {
+			panic(fmt.Sprintf("Error: ожидалось целое число, получено: '%s'", y))
+		}
+
+		if xInt > 10 || yInt > 10 || xInt < 0 || yInt < 0 {
+			panic("Error: числа находятся в диапазоне от 1 до 10")
+		}
+
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Println(r)
+			}
+		}()
+		Looperkal(x, plus, y)
+	} else {
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Println(r)
+			}
+		}()
+		Looperkal(x, plus, y)
+	}
 }
